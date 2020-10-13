@@ -1,113 +1,107 @@
 <html !doctype>
-  <head>
-    <title>Sudoku Helper</title>
-    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
-    <meta content="utf-8" http-equiv="encoding" />
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
-      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
-      crossorigin="anonymous"
-    />
-    <script src="./jquery.js"></script>
-    <script src="./bootstrap.min.js"></script>
-    <style>
-      .sudoku {
-        margin: auto;
-      }
-      .grid {
-        border: 1px solid black;
-        width: min(8vh, 8vw);
-        height: min(8vh, 8vw);
-        font-size: min(5vh, 5vw);
-        text-align: center;
-      }
-      .row {
-        padding: 0;
-        margin: 0;
-      }
-      .options {
-        font-size: min(1.5vh, 1.5vw);
-        width: min(2.5vh, 2.5vw);
-        padding: 0;
-        margin: 0;
-        text-align: center;
-      }
-    </style>
-  </head>
-  <body>
-    <div class="container">
-      <div class="sudoku" id="sudoku"></div>
-    </div>
-  </body>
-  <script src="./SUDOKU.js"></script>
-  <script>
-    const s = new SUDOKU();
 
-    const toGrid = function (grid) {
-      const value = grid.get();
-      if (value !== null) {
-        return `<div class="grid">${value}</div>`;
-      }
-      const p = grid.getPossible();
-      const id = grid.ID();
-      return `<div class="grid" data-id="${id}"><div class="row"><div class="options">${
-        p[1] ? "1" : ""
-      }</div><div class="options">${
-        p[2] ? "2" : ""
-      }</div><div class="options">${
-        p[3] ? "3" : ""
-      }</div></div><div class="row"><div class="options">${
-        p[4] ? "4" : ""
-      }</div><div class="options">${
-        p[5] ? "5" : ""
-      }</div><div class="options">${
-        p[6] ? "6" : ""
-      }</div></div><div class="row"><div class="options">${
-        p[7] ? "7" : ""
-      }</div><div class="options">${
-        p[8] ? "8" : ""
-      }</div><div class="options">${p[9] ? "9" : ""}</div></div></div>`;
-    };
+<head>
+  <title>Sudoku Helper</title>
+  <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+  <meta content="utf-8" http-equiv="encoding" />
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous" />
+  <script src="./jquery.js"></script>
+  <script src="./bootstrap.min.js"></script>
+  <style>
+    .sudoku {
+      margin: auto;
+    }
 
-    const toRow = function (grids) {
-      return `<div class="row">${grids.map(toGrid).join("")}</div>`;
-    };
+    .grid {
+      border: 1px solid black;
+      width: min(8vh, 8vw);
+      height: min(8vh, 8vw);
+      font-size: min(5vh, 5vw);
+      text-align: center;
+    }
 
-    const repaint = function () {
-      document.getElementById("sudoku").innerHTML = s
-        .get()
-        .reduce((a, b) => {
-          let last = a[a.length - 1];
-          if ((last || []).length % 9 == 0) {
-            a.push([b]);
-          } else {
-            last.push(b);
-          }
-          return a;
-        }, [])
-        .map(toRow)
-        .join("");
-    };
+    .row {
+      padding: 0;
+      margin: 0;
+    }
 
-    document.getElementsByTagName("body")[0].onclick = function (ev) {
-      const element = ev.target.closest(".grid");
-      if (element == null) {
-        return;
-      }
-      const id = element.dataset.id;
+    .options {
+      font-size: min(1.5vh, 1.5vw);
+      width: min(2.5vh, 2.5vw);
+      padding: 0;
+      margin: 0;
+      text-align: center;
+    }
+  </style>
+</head>
 
-      const value = +prompt("Number", "0");
+<body>
+  <div class="container">
+    <div class="sudoku" id="sudoku"></div>
+  </div>
+</body>
+<script src="./SUDOKU.js"></script>
+<script>
+  const s = new SUDOKU();
 
-      if (value !== 0) {
-        s.set(id, value);
-      }
+  const toGrid = function (grid) {
+    const value = grid.get();
+    if (value !== null) {
+      return `<div class="grid">${value}</div>`;
+    }
+    const p = grid.getPossible();
+    const id = grid.ID();
+    return `<div class="grid" data-id="${id}"><div class="row"><div class="options">${p[1] ? "1" : "&nbsp;"
+      }</div><div class="options">${p[2] ? "2" : "&nbsp;"
+      }</div><div class="options">${p[3] ? "3" : "&nbsp;"
+      }</div></div><div class="row"><div class="options">${p[4] ? "4" : "&nbsp;"
+      }</div><div class="options">${p[5] ? "5" : "&nbsp;"
+      }</div><div class="options">${p[6] ? "6" : "&nbsp;"
+      }</div></div><div class="row"><div class="options">${p[7] ? "7" : "&nbsp;"
+      }</div><div class="options">${p[8] ? "8" : "&nbsp;"
+      }</div><div class="options">${p[9] ? "9" : "&nbsp;"}</div></div></div>`;
+  };
 
-      repaint();
-    };
+  const toRow = function (grids) {
+    return `<div class="row">${grids.map(toGrid).join("")}</div>`;
+  };
 
-    console.log(s.toString());
+  const repaint = function () {
+    document.getElementById("sudoku").innerHTML = s
+      .get()
+      .reduce((a, b) => {
+        let last = a[a.length - 1];
+        if ((last || []).length % 9 == 0) {
+          a.push([b]);
+        } else {
+          last.push(b);
+        }
+        return a;
+      }, [])
+      .map(toRow)
+      .join("");
+  };
+
+  document.getElementsByTagName("body")[0].onclick = function (ev) {
+    const element = ev.target.closest(".grid");
+    if (element == null) {
+      return;
+    }
+    const id = element.dataset.id;
+
+    const value = +prompt("Number", "0");
+
+    if (value !== 0) {
+      s.set(id, value);
+    }
 
     repaint();
-  </script>
+  };
+
+  console.log(s.toString());
+
+  repaint();
+</script>
+
 </html>
