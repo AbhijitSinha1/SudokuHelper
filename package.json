@@ -1,12 +1,23 @@
 {
   "name": "sudokusolver",
   "version": "1.0.0",
-  "description": "",
+  "description": "This is not (yet) a sudoku solver. But you can use it as a helper. Enter digits in the sudoku and it will help you reach the final solution.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "abhijit sinha <abhijit.sinha@imaginea.com>",
+  "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AbhijitSinha1/SudokuHelper.git"
+  },
+  "bugs": {
+    "url": "https://github.com/AbhijitSinha1/SudokuHelper/issues"
+  },
+  "homepage": "https://github.com/AbhijitSinha1/SudokuHelper#readme",
+  "dependencies": {
+    "express": "^4.17.1"
+  }
 }
