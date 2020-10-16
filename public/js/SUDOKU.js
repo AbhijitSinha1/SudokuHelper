@@ -1,3 +1,21 @@
+/**
+ +----------+----------+----------+
+ | 00 01 02 | 03 04 05 | 06 07 08 |
+ | 09 10 11 | 12 13 14 | 15 16 17 |
+ | 18 19 20 | 21 22 23 | 24 25 26 |
+ +----------+----------+----------+
+ | 27 28 29 | 30 31 32 | 33 34 35 |
+ | 36 37 38 | 39 40 41 | 42 43 44 |
+ | 45 46 47 | 48 49 50 | 51 52 53 |
+ +----------+----------+----------+
+ | 54 55 56 | 57 58 59 | 60 61 62 |
+ | 63 64 65 | 66 67 68 | 69 70 71 |
+ | 72 73 74 | 75 76 77 | 78 79 80 |
+ +----------+----------+----------+
+*/
+
+// ----------------------------------------------------------------------------
+
 const Grid = function (id) {
   let possible = {
     1: true,
@@ -21,6 +39,7 @@ const Grid = function (id) {
   this.get = function () {
     return value;
   };
+
   this.set = function (number) {
     if (!possible[number]) {
       return;
@@ -44,6 +63,10 @@ const Grid = function (id) {
     connections.push(connection);
   };
 
+  this.addUnique = function (unique) {
+    uniques.push(unique);
+  }
+
   this.remomve = function (number) {
     if (!possible[number]) {
       return;
@@ -59,53 +82,9 @@ const Grid = function (id) {
     }
   };
 
-  this.setUnique = function (grids) {
-    uniques.push(grids);
-  };
-
-  this.getUnique = function () {
-    for (grids of uniques) {
-      let uArr = [1, 2, 3, 4, 5, 6, 7, 8, 9].filter((n) => possible[n]);
-
-      if (uArr.length == 0) {
-        break;
-      }
-
-      for (grid of grids) {
-        if (grid.ID() === id) {
-          continue;
-        }
-
-        const pObj = grid.getPossible();
-        uArr = uArr.filter((n) => !pObj[n]);
-      }
-      if (uArr.length == 1) {
-        console.log(id, uArr[0], possible);
-
-        return uArr;
-      }
-    }
-
-    return [];
-  };
-
   this.getPossible = function () {
     return possible;
   };
-};
-const link = function (grids) {
-  for (i = 0; i < grids.length; i++) {
-    for (j = 0; j < grids.length; j++) {
-      if (i == j) {
-        continue;
-      }
-      grids[i].add(grids[j]);
-    }
-  }
-
-  for (i = 0; i < grids.length; i++) {
-    grids[i].setUnique(grids);
-  }
 };
 
 const LINKS = [
@@ -142,36 +121,48 @@ const LINKS = [
 ];
 
 const SUDOKU = function () {
-  const grids = new Array(81).fill(0).map((z, idx) => new Grid(idx));
+  let grids;
 
-  for (const num of LINKS) {
-    const arr = grids.filter((z, idx) => num.includes(idx));
-    link(arr);
-  }
+  // private methods
+  // --------------------------------------------------------------------------
+  const link = function (grids) {
+    for (i = 0; i < grids.length; i++) {
+      // grids[i].addUnique(grids);
 
-  const checkUnique = function () {
-    let done = false,
-      count = 0;
-    while (!done && count < 81) {
-      count++;
-      done = true;
-      for (grid of grids) {
-        console.log(grid.ID());
-        const uArr = grid.getUnique();
-        console.log(grid.ID());
-
-        if (uArr.length == 1) {
-          done = false;
-          console.log("setting", grid.ID(), uArr[0], grid.getPossible());
-          grid.set(uArr[0]);
+      for (j = 0; j < grids.length; j++) {
+        if (i == j) {
+          continue;
         }
+        grids[i].add(grids[j]);
       }
     }
   };
 
+  const findAndSetUnique = function (arr) {
+    let found = false;
+    const obj = {
+      1: [], 2: [], 3: [], 4: [], 5: [], 6: [], 7: [], 8: [], 9: [],
+    };
+
+    for (const g of arr) {
+      const p = g.getPossible();
+      [1, 2, 3, 4, 5, 6, 7, 8, 9].filter(n => p[n]).forEach(n => obj[n].push(g));
+    }
+
+    for (key in obj) {
+      if (obj[key].length == 1) {
+        obj[key][0].set(+key);
+        found = true;
+      }
+    }
+
+    return found;
+  }
+
+  // public methods
+  // --------------------------------------------------------------------------
   this.set = function (idx, number) {
     grids[idx].set(number);
-    // checkUnique();
   };
 
   this.get = function () {
@@ -194,20 +185,25 @@ const SUDOKU = function () {
 
     return string;
   };
-};
 
-/**
- +----------+----------+----------+
- | 00 01 02 | 03 04 05 | 06 07 08 |
- | 09 10 11 | 12 13 14 | 15 16 17 |
- | 18 19 20 | 21 22 23 | 24 25 26 |
- +----------+----------+----------+
- | 27 28 29 | 30 31 32 | 33 34 35 |
- | 36 37 38 | 39 40 41 | 42 43 44 | 
- | 45 46 47 | 48 49 50 | 51 52 53 | 
- +----------+----------+----------+
- | 54 55 56 | 57 58 59 | 60 61 62 |
- | 63 64 65 | 66 67 68 | 69 70 71 |
- | 72 73 74 | 75 76 77 | 78 79 80 |
- +----------+----------+----------+
-*/
+  this.auto = function () {
+    let found = true;
+    while (found) {
+      for (nums of LINKS) {
+        found = findAndSetUnique(grids.filter(g => nums.includes(g.ID())));
+      }
+    }
+  }
+
+  this.reset = function () {
+    grids = new Array(81).fill(0).map((z, idx) => new Grid(idx));
+    for (const num of LINKS) {
+      const arr = grids.filter(z => num.includes(z.ID()));
+      link(arr);
+    }
+  }
+
+  // auto call
+  // --------------------------------------------------------------------------
+  this.reset();
+};

@@ -43,6 +43,8 @@
 <body>
   <div class="container">
     <div class="sudoku" id="sudoku"></div>
+    <div class="btn btn-success" id="auto">Auto</div>
+    <div class="btn btn-danger" id="reset">Reset</div>
   </div>
 </body>
 <script src="../js/SUDOKU.js"></script>
@@ -103,7 +105,15 @@
     repaint();
   };
 
-  console.log(s.toString());
+  document.getElementById("auto").onclick = function () {
+    s.auto();
+    repaint();
+  }
+
+  document.getElementById("reset").onclick = function () {
+    s.reset();
+    repaint();
+  }
 
   repaint();
 </script>
