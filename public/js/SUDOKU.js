@@ -59,6 +59,14 @@ const Grid = function (id) {
     connections.forEach((c) => c.remomve(number));
   };
 
+  this.removePossible = function (number) {
+    possible[number] = false;
+    const pArr = [1, 2, 3, 4, 5, 6, 7, 8, 9].filter(n => possible[n]);
+    if (pArr.length == 1) {
+      this.set(pArr[0]);
+    }
+  }
+
   this.add = function (connection) {
     connections.push(connection);
   };
@@ -163,6 +171,10 @@ const SUDOKU = function () {
   // --------------------------------------------------------------------------
   this.set = function (idx, number) {
     grids[idx].set(number);
+  };
+
+  this.removePossible = function (idx, number) {
+    grids[idx].removePossible(number);
   };
 
   this.get = function () {

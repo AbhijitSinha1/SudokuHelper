@@ -51,6 +51,8 @@
 <script>
   const s = new SUDOKU();
 
+  const body = document.getElementsByTagName("body")[0];
+
   const toGrid = function (grid) {
     const value = grid.get();
     if (value !== null) {
@@ -89,7 +91,7 @@
       .join("");
   };
 
-  document.getElementsByTagName("body")[0].onclick = function (ev) {
+  body.onclick = function (ev) {
     const element = ev.target.closest(".grid");
     if (element == null) {
       return;
@@ -104,6 +106,26 @@
 
     repaint();
   };
+
+  body.oncontextmenu = function (ev) {
+    ev.preventDefault();
+
+    const element = ev.target.closest(".grid");
+    if (element == null) {
+      return;
+    }
+    const id = element.dataset.id;
+
+    const value = +prompt("Number", "0");
+
+    if (value !== 0) {
+      s.removePossible(id, value);
+    }
+
+    repaint();
+
+    return false;
+  }
 
   document.getElementById("auto").onclick = function () {
     s.auto();
